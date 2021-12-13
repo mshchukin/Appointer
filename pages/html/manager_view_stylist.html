@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Appointer - Stylist</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
+    <link rel="stylesheet prefetch" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 480px)" href="/pages/css/style-sheet-small.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 480px)" href="/pages/css/style-sheet-medium.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 786px)" href="/pages/css/style-sheet-large.css">
+    <link rel="stylesheet" type="text/css" href="/pages/css/sweetalert.css">
+    <link rel="stylesheet" type="text/css" href="/pages/css/component.css" />
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/pages/css/fullcalendar.min.css" rel="stylesheet" />
+    <link href="/pages/css/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <script src="/pages/js/moment.min.js"></script>
+    <script src="/pages/js/jquery.min.js"></script>
+    <script src="/pages/js/fullcalendar.min.js"></script>
+    <script src="/pages/js/sweetalert.min.js"></script>
+    <script src="/pages/js/validation.js"></script>
+    <script src="/pages/js/modernizr.custom.js"></script>
+    <script src="/pages/js/conflict.js"></script>
+    <script>
+      $(document).ready(function()
+      {
+          $('#calendar').fullCalendar(
+          {
+              header:
+              {
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'month,agendaWeek,agendaDay'
+              },
+              defaultDate: '2016-12-12',
+              navLinks: true, // can click day/week names to navigate views
+              selectable: true,
+              selectHelper: true,
+              hover: function(start, end)
+              {
+                  alert("uo");
+              },
+              select: function(start, end)
+              {
+
+                  swal(
+                      {
+                          title: "Add Appointment",
+                          text: "Title:",
+                          type: "input",
+                          showCancelButton: true,
+                          closeOnConfirm: false,
+                          showCancelButton: true,
+                          confirmButtonColor: "#ffa500",
+                          confirmButtonText: "Add",
+                          closeOnConfirm: false,
+                          animation: "slide-from-top",
+                          inputPlaceholder: "Title"
+                      },
+                      function(inputValue)
+                      {
+                          if (inputValue === false) return false;
+
+                          if (inputValue === "")
+                          {
+                              swal.showInputError("You need to write something!");
+                              return false
+                          }
+
+                          swal("Appointment Added!", inputValue, "success");
+                          var eventData;
+
+                          eventData = {
+                              title: inputValue,
+                              start: start,
+                              end: end
+                          };
+                          $('#calendar').fullCalendar('renderEvent', eventData, true);
+                          $('#calendar').fullCalendar('unselect');
+                      });
+
+              },
+              eventClick: function(event, jsEvent, view)
+              {
+                  var modal = document.getElementById("popup");
+                  modal.style.display = "block";
+                  var eventTitle = document.getElementById("eventTitle");
+                  eventTitle.innerHTML = event.title;
+
+
+                  var eventStart = document.getElementById("eventStart");
+                  eventStart.innerHTML = "Start Time: " + event.start;
+
+                  var eventEnd = document.getElementById("eventEnd");
+                  eventEnd.innerHTML = "End Time: " + event.end;
+
+                  //Add section for stylist if hair appointment
+                  var eventEnd = document.getElementById("eventStylist");
+                  eventEnd.innerHTML = "Stylist: ";
+
+                  var eventEnd = document.getElementById("eventLocation");
+                  eventEnd.innerHTML = "Salon Location: ";
+              },
+              editable: true,
+              eventLimit: true, // allow "more" link when too many events
+              events: [
+              {
+                  title: 'All Day Event',
+                  start: '2016-12-01'
+              },
+              {
+                  title: 'Long Event',
+                  start: '2016-12-07',
+                  end: '2016-12-10'
+              },
+              {
+                  id: 999,
+                  title: 'Repeating Event',
+                  start: '2016-12-09T16:00:00'
+              },
+              {
+                  id: 999,
+                  title: 'Repeating Event',
+                  start: '2016-12-16T16:00:00'
+              },
+              {
+                  title: 'Conference',
+                  start: '2016-12-11',
+                  end: '2016-12-13'
+              },
+              {
+                  title: 'Meeting',
+                  start: '2016-12-12T10:30:00',
+                  end: '2016-12-12T12:30:00'
+              },
+              {
+                  title: 'Lunch',
+                  start: '2016-12-12T12:00:00'
+              },
+              {
+                  title: 'Meeting',
+                  start: '2016-12-12T14:30:00'
+              },
+              {
+                  title: 'Happy Hour',
+                  start: '2016-12-12T17:30:00'
+              },
+              {
+                  title: 'Dinner',
+                  start: '2016-12-12T20:00:00'
+              },
+              {
+                  title: 'Birthday Party',
+                  start: '2016-12-13T07:00:00'
+              },
+              {
+                  title: 'Click for Google',
+                  url: 'http://google.com/',
+                  start: '2016-12-28'
+              }]
+          });
+
+      });
+    </script>
+  </head>
+  <body>
+    <div class="background">
+      <!-- START OF TOOLBAR -->
+      <nav>
+        <ul class="toolbar__wrapper">
+          <a href="/home"><img src="/pages/images/logo.png" class="toolbarLogo"></a>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/profile">My Profile</a></li>
+          <li><a href="/settings">My Settings</a></li>
+          <li><a href="/stylists">My Stylists</a></li>
+          <li><a href="/addstylist">Add Stylist</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </nav>
+      <!-- END OF TOOLBAR -->
+      <!-- START OF CALENDAR -->
+      <div id='calendar'></div>
+      <!-- END OF CALENDAR -->
+      <!-- START OF SIDE PANEL -->
+      <div class="sidepanel__wrapper">
+        <br />
+        <div class="sminputs">
+          <div class="input full">
+            <label class="string optional" for="user-name" id="label-appointmentName">Cancellation Requests</label>
+          </div>
+        </div>
+        <div class="sminputs">
+          <div class="input full">
+            <label class="string optional" for="user-name" id="label-appointmentDate">Appointment Date:</label>
+            <label class="string optional" for="user-name" id="label-appointmentDetails">Appointment Time:</label>
+            <label class="string optional" for="user-name" id="label-appointmentDetails">Appointment Client:</label>
+          </div>
+          <input class="approve" name="approve" type="button" id="approve" value="Approve" />
+          <input class="decline" name="decline" type="button" id="decline" value="Decline" />
+        </div>
+      </div>
+      <!-- END OF SIDE PANEL -->
+    </div>
+    <!-- EVENT WINDOW -->
+    <div id="popup" class="popup__wrapper">
+      <div id="popup__content" class="popup__content">
+        <span class="close">&times;</span>
+        <div id="eventInfo" class="eventInfo">
+          <div id="eventTitle" class="eventTitle"></div>
+          <div id="eventStart" class="eventEtc"></div>
+          <div id="eventEnd" class="eventEtc"></div>
+          <div id="eventStylist" class="eventEtc"></div>
+          <div id="eventLocation" class="eventEtc"></div>
+        </div>
+        <div id="galleryBar" class="galleryBar">
+          Gallery
+        </div>
+        <div id="gallery" class="gallery">
+        </div>
+      </div>
+    </div>
+    <script src="/pages/js/manager_view_stylist_handler.js"></script>
+  </body>
+</html>

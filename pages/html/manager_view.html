@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Appointer - Home</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
+    <link rel="stylesheet prefetch" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 480px)" href="/pages/css/style-sheet-small.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 480px)" href="/pages/css/style-sheet-medium.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 786px)" href="/pages/css/style-sheet-large.css">
+    <link rel="stylesheet" type="text/css" href="/pages/css/sweetalert.css">
+    <link rel="stylesheet" type="text/css" href="/pages/css/component.css" />
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/pages/css/fullcalendar.min.css" rel="stylesheet" />
+    <link href="/pages/css/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <script src="/pages/js/moment.min.js"></script>
+    <script src="/pages/js/jquery.min.js"></script>
+    <script src="/pages/js/fullcalendar.min.js"></script>
+    <script src="/pages/js/sweetalert.min.js"></script>
+    <script src="/pages/js/validation.js"></script>
+    <script src="/pages/js/modernizr.custom.js"></script>
+    <script src="/pages/js/conflict.js"></script>
+    <script>
+      var transition = false; //Stores whether or not the calendar is transitioning between views
+      var selectedEvent = 0; //Stores the selected event
+
+      $(document).ready(function()
+      {
+          //Create the calendar
+          $('#calendar').fullCalendar(
+          {
+              header:
+              {
+                  left: 'prev,next',
+                  center: 'title',
+                  right: 'month,agendaDay'
+              },
+
+              minTime: '10:00:00',
+              maxTime: '18:00:00',
+              timezone: 'UTC',
+              defaultDate: moment.utc().add(1, 'days'),
+              slotDuration: '00:30:00',
+              disableDragging: true,
+              navLinks: false,
+              selectable: false,
+              selectHelper: true,
+              allDaySlot: false,
+              editable: false,
+              eventLimit: true,
+              height: 500,
+              events: '/salon/unavailable',
+
+              select: function(start, end) //Selected a time or day
+              {
+                  if (transition) //We just transitioned between views
+                  {
+                      transition = false; //Reset the transition variable
+                  }
+                  else //We didn't just transition between views
+                  {
+                      //Confirm meeting
+                      swal(
+                          {
+                              title: 'Schedule Meeting',
+                              text: 'Are you sure?',
+                              type: 'info',
+                              showCancelButton: true,
+                              closeOnConfirm: false,
+                              showCancelButton: true,
+                              confirmButtonColor: '#ffa500',
+                              confirmButtonText: 'Book',
+                              closeOnConfirm: false,
+                              animation: 'slide-from-top'
+                          },
+
+                          function()
+                          {
+                              //Set up the event data
+                              var eventData = {
+                                  title: 'Meeting',
+                                  start: start,
+                                  end: end,
+                                  service: null,
+                                  serviceName: '',
+                                  stylist: null,
+                                  stylistName: '',
+                                  details: document.getElementById('specialRequest').value,
+                                  image: '',
+                                  color: '#44CCFF'
+                              };
+
+                              var eventDataFormatted = eventData; //Copy the event data
+
+                              //Format the event data times as strings instead of moment objects
+                              eventDataFormatted.start = String(eventDataFormatted.start);
+                              eventDataFormatted.end = String(eventDataFormatted.end);
+
+                              if (!conflict(start, end, $('#calendar').fullCalendar('clientEvents'))) //There is no conflicting events
+                              {
+                                  $.post('/salon/schedule', eventDataFormatted, //jQuery POST to schedule the meeting
+                                      function(data)
+                                      {
+                                          if (data.success) //Scheduling the meeting was successful
+                                          {
+                                              $("#calendar").fullCalendar("refetchEvents"); //Refetch the events
+                                              swal('Meeting Booked!', 'Your meeting was succesfully scheduled!', 'success'); //Show a success alert
+
+                                          }
+                                          else //Scheduling the meeting was unsuccessful
+                                          {
+                                              swal('Meeting Scheduling \nFailed!', 'Your meeting could not be booked!', 'error'); //Show an error alert
+                                          }
+
+                                          $('#calendar').fullCalendar('refetchEvents');
+                                      },
+                                      'json'
+                                  );
+                              }
+                              else //There is a conflicting event
+                              {
+                                  swal('Meeting Booking \nFailed!', 'You cannot book an meeting there!', 'error'); //Show an error alert
+                              }
+
+                              $('#calendar').fullCalendar('unselect'); //Unselect anything selected on the calendar
+                          }
+                      );
+                  }
+              },
+
+              dayClick: function(date, jsEvent, view) //Clicked a day
+              {
+                  if ($('#calendar').fullCalendar('getView').name == 'month') //The user is in the month view
+                  {
+                      transition = true; //We are transitioning between views
+
+                      if (date >= moment.utc().add(1, 'day').startOf('day') && date <= moment.utc().startOf('month').add(6, 'months').subtract(1, 'day').endOf('day')) //The date is within the valid range
+                      {
+                          $('#calendar').fullCalendar('select', date); //Select the day
+                          $('#calendar').fullCalendar('gotoDate', date.format()); //Go to the day
+                          $('#calendar').fullCalendar('changeView', 'agendaDay'); //Switch to the day view
+                      }
+                      else //The date is not within the valid range
+                      {
+                          swal('Whoops!', 'You cannot book an meeting here!', 'warning'); //Show a warning alert
+                      }
+                  }
+                  else //The user is in the day view
+                  {
+                      var start = date; //Set the start date and time
+                      var end = date.clone().add(60, 'minutes'); //Create the end date and time based on the length of the selected service
+
+                      if (!conflict(start, end, $('#calendar').fullCalendar('clientEvents'))) //There are no conflicting events
+                      {
+                          $('#calendar').fullCalendar('select', start, end); //Select the time slot
+                      }
+                      else //There are conflicting events
+                      {
+                          swal('Whoops!', 'You cannot book an meeting here!', 'warning');  //Show a warning alert
+                      }
+                  }
+              },
+
+              viewRender: function(currentView) //A view is being rendered
+              {
+                  $.post( '/salon/businessHours', //Get the business hours for the selected location
+                      function(data)
+                      {
+                          var curMin = $('#calendar').fullCalendar('option', 'minTime'); //Get the current minTime
+                          var curMax = $('#calendar').fullCalendar('option', 'maxTime'); //Get the current maxTime
+
+                          if(curMin != String(data.open + ':00:00')) //The new minTime is different
+                          {
+                              $('#calendar').fullCalendar('option', 'minTime', String(data.open + ':00:00')); //Update the minTime
+                          }
+
+                          if(curMax != String(data.close + ':00:00')) //The new maxTime is different
+                          {
+                              $('#calendar').fullCalendar('option', 'maxTime', String(data.close + ':00:00')); //Update the maxTime
+                          }
+                      },
+                      'json'
+                  );
+
+                  //Create the minumum and maximum dates
+                  var minDate = moment.utc().add(1, 'day').startOf('day'),
+                      maxDate = moment.utc().startOf('month').add(6, 'months').subtract(1, 'day').startOf('day');
+
+                  if($('#calendar').fullCalendar('getDate').isBefore(minDate)) //The user is on a date earlier than the minimum date
+                  {
+                      $('#calendar').fullCalendar('gotoDate', minDate); //Set the date to the minimum date
+                  }
+                  else if($('#calendar').fullCalendar('getDate').isAfter(maxDate)) //The user is on a date later than the maximum date
+                  {
+                      $('#calendar').fullCalendar('gotoDate', maxDate); //Set the date to the maximum date
+                  }
+
+                  if (minDate >= currentView.start && minDate <= currentView.end && minDate.month() == $('#calendar').fullCalendar('getDate').month()) //The user is on the earliest day available
+                  {
+                      //Disable the back button
+                      $('.fc-prev-button').prop('disabled', true);
+                      $('.fc-prev-button').addClass('fc-state-disabled');
+                  }
+                  else //The user is not on the earliest day available
+                  {
+                      //Enable the back button
+                      $('.fc-prev-button').removeClass('fc-state-disabled');
+                      $('.fc-prev-button').prop('disabled', false);
+                  }
+
+                  if (maxDate >= currentView.start && maxDate <= currentView.end) //The user is on the last day available
+                  {
+                      //Disable the next button
+                      $('.fc-next-button').prop('disabled', true);
+                      $('.fc-next-button').addClass('fc-state-disabled');
+                  }
+                  else //The user is not the earliest day available
+                  {
+                      //Enable the next button
+                      $('.fc-next-button').removeClass('fc-state-disabled');
+                      $('.fc-next-button').prop('disabled', false);
+                  }
+              },
+
+              eventClick: function(event, jsEvent, view) //Event clicked
+              {
+                  if (event.color != '#BBB' && event.color != '#008888') //The event is not grey, so it can be clicked
+                  {
+                      selectedEvent = event.id; //Set the selected event
+
+                      //Generate the event window
+                      var modal = document.getElementById('eventPopup');
+                      modal.style.display = 'block';
+
+                      var eventTitle = document.getElementById('eventTitle');
+                      eventTitle.innerHTML = event.title;
+
+                      var eventStart = document.getElementById('eventStart');
+                      eventStart.innerHTML = 'Start Time: ' + event.start.format('MM/DD/YYYY hh:mma');
+
+                      var eventEnd = document.getElementById('eventEnd');
+                      eventEnd.innerHTML = 'End Time: ' + event.end.format('MM/DD/YYYY hh:mma');
+
+                      var eventStylist = document.getElementById('eventStylist');
+                      eventStylist.innerHTML = 'Stylist: ' + event.stylistName;
+
+                      var eventLocation = document.getElementById('eventLocation');
+                      eventLocation.innerHTML = 'Salon Location: ' + event.locationName;
+
+                      var eventDetails = document.getElementById('eventDetails');
+
+                      if (event.details != '') //The event has details
+                      {
+                          eventDetails.innerHTML = 'Appointment Details: ' + event.details;
+                      }
+                      else //The event has no details
+                      {
+                          eventDetails.innerHTML = 'Appointment Details: NO DETAILS SPECIFIED';
+                      }
+
+                      var galleryBar = document.getElementById('galleryBar');
+                      galleryBar.style.display = 'block';
+
+                      var gallery = document.getElementById('og-grid2');
+                      gallery.style.position = 'relative';
+
+                      if (event.image != '') //The event has an image
+                      {
+                          gallery.innerHTML = '<li><img src=\"/uploads/' + event.image + '\" height=\"250\" width=\"250\" alt=\"img\"/></li>';
+                      }
+                      else //The event has no image
+                      {
+                          gallery.innerHTML = '<span>NO IMAGE UPLOADED</span>';
+                      }
+                  }
+                  else if (event.color == '#008888')
+                  {
+                      selectedEvent = event.id; //Set the selected event
+
+                      //Generate the event window
+                      var modal = document.getElementById('eventPopupMeeting');
+                      modal.style.display = 'block';
+
+                      var eventTitle = document.getElementById('eventTitle2');
+                      eventTitle.innerHTML = event.title;
+
+                      var eventStart = document.getElementById('eventStart2');
+                      eventStart.innerHTML = 'Start Time: ' + event.start.format('MM/DD/YYYY hh:mma');
+
+                      var eventEnd = document.getElementById('eventEnd2');
+                      eventEnd.innerHTML = 'End Time: ' + event.end.format('MM/DD/YYYY hh:mma');
+
+                      var eventStylist = document.getElementById('eventStylist2');
+                      eventStylist.innerHTML = 'Manager: ' + event.stylistName;
+
+                      var eventLocation = document.getElementById('eventLocation2');
+                      eventLocation.innerHTML = 'Salon Location: ' + event.locationName;
+
+                      var eventDetails = document.getElementById('eventDetails2');
+
+                      if (event.details != '') //The event has details
+                      {
+                          eventDetails.innerHTML = 'Meeting Details: ' + event.details;
+                      }
+                      else //The event has no details
+                      {
+                          eventDetails.innerHTML = 'Meeting Details: NO DETAILS SPECIFIED';
+                      }
+                  }
+              }
+          });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="background">
+      <!-- START OF TOOLBAR -->
+      <nav>
+        <ul class="toolbar__wrapper">
+          <a href="/home"><img src="/pages/images/logo.png" class="toolbarLogo"></a>
+          <li><a class="active" href="/home">Home</a></li>
+          <li><a href="/profile">My Profile</a></li>
+          <li><a href="/settings">My Settings</a></li>
+          <li><a href="/stylists">My Stylists</a></li>
+          <li><a href="/addstylist">Add Stylist</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </nav>
+      <!-- END OF TOOLBAR -->
+      <!-- START OF CALENDAR -->
+      <div id="calendar"></div>
+      <!-- END OF CALENDAR -->
+      <!-- START OF SIDE PANEL -->
+      <div class="sidepanel__wrapper">
+        <h2 class="bookAppointmentHeader" id="bookAppointment-title">Schedule Meeting</h2>
+        <div class="sminputsLarge">
+          <div class="input full">
+            <label class="string optional" for="user-name" id="label-specialRequest">Details</label>
+            <textarea id="specialRequest" placeholder="Details" class="textareaStyle"></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- END OF SIDE PANEL -->
+    </div>
+    <!-- EVENT WINDOW -->
+    <div id="eventPopup" class="popup__wrapper">
+      <!-- MODAL CONTENT -->
+      <div id="eventPopup__content" class="popup__content">
+        <span class="close">&times;</span>
+        <div id="eventInfo" class="eventInfo">
+          <div id="eventTitle" class="eventTitle"></div>
+          <button id="cancelAppointmentButton" class="cancelAppointmentButton">CANCEL APPOINTMENT</button>
+          <div id="eventStart" class="eventEtc"></div>
+          <div id="eventEnd" class="eventEtc"></div>
+          <div id="eventStylist" class="eventEtc"></div>
+          <div id="eventLocation" class="eventEtc"></div>
+          <div id="eventDetails" class="eventEtc"></div>
+        </div>
+        <div id="galleryBar" class="galleryBar">
+          Gallery
+        </div>
+        <div id="gallery" class="gallery">
+          <div class="main">
+            <ul id="og-grid2" class="og-grid scrollable">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MEETING WINDOW -->
+    <div id="eventPopupMeeting" class="popup__wrapper">
+      <!-- MODAL CONTENT -->
+      <div id="eventPopupMeeting__content" class="popup__content">
+        <span class="close">&times;</span>
+        <div id="eventInfo2" class="eventInfo">
+          <div id="eventTitle2" class="eventTitle"></div>
+          <button id="cancelMeetingButton" class="cancelAppointmentButton">CANCEL MEETING</button>
+          <div id="eventStart2" class="eventEtc"></div>
+          <div id="eventEnd2" class="eventEtc"></div>
+          <div id="eventStylist2" class="eventEtc"></div>
+          <div id="eventLocation2" class="eventEtc"></div>
+          <div id="eventDetails2" class="eventEtc"></div>
+        </div>
+      </div>
+    </div>
+    <script src="/pages/js/manager_view_handler.js"></script>
+    <script src="/pages/js/grid.js"></script>
+    <script>$(function(){ Grid.init(); });</script>
+  </body>
+</html>

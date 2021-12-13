@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Appointer - Settings</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
+    <link rel="stylesheet prefetch" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 480px)" href="/pages/css/style-sheet-small.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 480px)" href="/pages/css/style-sheet-medium.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 786px)" href="/pages/css/style-sheet-large.css">
+    <script src="/pages/js/validation.js"></script>
+  </head>
+  <body>
+    <div class="background">
+      <!-- START OF TOOLBAR -->
+      <nav>
+        <ul class="toolbar__wrapper">
+          <a href="/home"><img src="/pages/images/logo.png" class="toolbarLogo"></a>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/profile">My Profile</a></li>
+          <li><a class="active" href="/settings">My Settings</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </nav>
+      <!-- END OF TOOLBAR -->
+      <div class="stylemod">
+        <div class="stylemod__wrapper">
+          <div class="stylemod__container">
+            <div class="stylemod__container">
+              <div class="stylemod__tab-wrapper">
+                <div class="settings__wrapper">
+                  <div id="stylistName" class="settings__title">Employee Settings</div>
+                  Change settings like your email, password, and address.
+                  <br /><br />
+                  <label id="label-email" class="settings_label">Change Email:</label>
+                  <br /><input type="text" id = "email" name="email" class="settings_input" placeholder="Change Email"> <br /><br/>
+                  <button id="saveEmail" class="saveButton">Save Email</button>
+                  <br><br>
+                  <hr>
+                  <label id="label-password" class="settings_label">Change Password:</label>
+                  <br /><input type="password" id ="password" name="password" class="settings_input" placeholder="Enter New Password"> <br /><br/>
+                  <label id="label-passwordConfirm" class="settings_label">Confirm Password:</label>
+                  <br /><input type="password" id="passwordRepeat" name="passwordRepeat" class="settings_input" placeholder="Confirm New Password"> <br /><br />
+                  <button id="savePassword" class="saveButton">Save Password</button>
+                  <br><br>
+                  <hr>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/pages/js/stylist_settings_handler.js"></script>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Appointer - Add Stylist</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
+    <link rel="stylesheet prefetch" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 480px)" href="/pages/css/style-sheet-small.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 480px)" href="/pages/css/style-sheet-medium.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 786px)" href="/pages/css/style-sheet-large.css">
+    <script src="/pages/js/jquery.min.js"></script>
+    <script src="/pages/js/validation.js"></script>
+  </head>
+  <body>
+    <div class="background">
+      <!-- START OF TOOLBAR -->
+      <nav>
+        <ul class="toolbar__wrapper">
+          <a href="/home"><img src="/pages/images/logo.png" class="toolbarLogo"></a>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/profile">My Profile</a></li>
+          <li><a href="/settings">My Settings</a></li>
+          <li><a href="/stylists">My Stylists</a></li>
+          <li><a class="active" href="/addstylist">Add Stylist</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </nav>
+      <!-- END OF TOOLBAR -->
+      <div class="addStylist__wrapper">
+        <div class="addStylist__container">
+          <div class="addStylist__heading">
+            <br>
+            <span class="addStylist__title"> Add Stylist</span>
+            <br>
+            <span class="addStylist__heading-subtitle">Enter new stylist's personal details <strong>to create an acount</strong></span>
+          </div>
+          <div class="addStylist__form">
+            <form accept-charset="utf-8" action="#" class="simform">
+              <div class="sminputs">
+                <div class="input string optional">
+                  <label class="string optional" for="firstName" id="label-firstName">First Name *</label>
+                  <label class="error" id="invalid-firstName"></label>
+                  <input class="string optional" maxlength="255" id="firstName" placeholder="First Name" type="text" size="50" />
+                </div>
+                <div class="input string optional">
+                  <label class="string optional" for="lastName" id="label-lastName">Last Name *</label>
+                  <input class="string optional" maxlength="255" id="lastName" placeholder="Last Name" type="text" size="50" />
+                </div>
+              </div>
+              <div class="sminputs">
+                <div class="input full">
+                  <label class="string optional" for="user-name" id="label-birthdate">Birthdate*</label>
+                  <div class="styled-select">
+                    <select id="days">
+                    </select>
+                  </div>
+                  <div class="styled-select">
+                    <select id="months">
+                    </select>
+                  </div>
+                  <div class="styled-select">
+                    <select id="years">
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="sminputs">
+                <div class="input full">
+                  <label class="string optional" for="location" id="label-location">Location*</label>
+                  <label class="error" id="invalid-location"></label>
+                  <div class="styled-select" >
+                    <select id="country">
+                      <option>Canada</option>
+                    </select>
+                  </div>
+                  <div class="styled-select" >
+                    <select id="province">
+                      <option value="00" >Province/Territory</option>
+                      <option value="Alberta">Alberta</option>
+                      <option value="British Columbia">British Columbia</option>
+                      <option value="Manitoba">Manitoba</option>
+                      <option value="New Brunswick">New Brunswick</option>
+                      <option value="Newfoundlan/Labrador">Newfoundland/Labrador</option>
+                      <option value="Northwest Territories">Northwest Territories</option>
+                      <option value="Nova Scotia">Nova Scotia</option>
+                      <option value="Nunavut">Nunavut</option>
+                      <option value="Ontario">Ontario</option>
+                      <option value="Prince Edward Island">Prince Edward Island</option>
+                      <option value="Quebec">Quebec</option>
+                      <option value="Saskatchewan">Saskatchewan</option>
+                      <option value="Yukon">Yukon</option>
+                    </select>
+                  </div>
+                  <div class="styled-select" >
+                    <select id="city">
+                      <option value="00" >City</option>
+                    </select>
+                  </div>
+                  <div class="styled-select" >
+                    <select id="salon">
+                      <option value="00" >Salon</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="sminputs">
+                <div class="input full">
+                  <label class="string optional" for="user-name" id="label-email">Email*</label>
+                  <input class="string optional" maxlength="255" id="email" placeholder="Email" type="email" size="50" />
+                </div>
+              </div>
+              <div class="simform__actions">
+                <span class="addStylist__heading-subtitle">A one-time password will be sent to stylist's email for first log in.</span>
+                <br>
+                <input class="sumbit" name="commit" type="submit" value="Create Account" id="createAccount" />
+              </div>
+            </form>
+          </div>
+          <div class="logmod__alter">
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/pages/js/manager_add_stylist_handler.js"></script>
+    <script src="/pages/js/birthday_picker.js"></script>
+  </body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Appointer - Profile</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
+    <link rel="stylesheet prefetch" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 480px)" href="/pages/css/style-sheet-small.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 480px)" href="/pages/css/style-sheet-medium.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 786px)" href="/pages/css/style-sheet-large.css">
+    <link rel="stylesheet" type="text/css" href="/pages/css/component.css" />
+    <link rel="shortcut icon" href="favicon.ico">
+    <script src="/pages/js/jquery.min.js"></script>
+    <script src="/pages/js/validation.js"></script>
+    <script src="/pages/js/modernizr.custom.js"></script>
+  </head>
+  <body>
+    <div class="background">
+      <!-- START OF TOOLBAR -->
+      <nav>
+        <ul class="toolbar__wrapper">
+          <a href="/home"><img src="/pages/images/logo.png" class="toolbarLogo"></a>
+          <li><a href="/home">Home</a></li>
+          <li><a class="active" href="/profile">My Profile</a></li>
+          <li><a href="/settings">My Settings</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </nav>
+      <!-- END OF TOOLBAR -->
+      <div class="stylemod">
+        <div class="stylemod__wrapper">
+          <div class="stylemod__container">
+            <div class="stylemod__container">
+              <div id="customerName" class="customerName">Customer Name</div>
+              <div id="customerImage" class="customerImage">
+                <img class="customerImage" src="/pages/images/colorfulHair.jpeg" alt="Profile Picture">
+                <div class="editPic__wrapper" id="editProfilePic"><img class="edit" src="/pages/images/edit.png" alt="Profile Edit"></div>
+              </div>
+              <div id="customerLocation" class="customerLocation"> Customer Billing Address, <br /> Regina, SK., S4S 0A2, Canada</div>
+              <br /><br/>
+              <ul class="stylemodbar__wrapper">
+                <li  class="active" ><a id="lgm-1" class="active" href="#">Schedule</a></li>
+                <li ><a id="lgm-2" class="unactive" href="#">Upcoming Appointments</a></li>
+                <li  ><a id="lgm-3" class="unactive" href="#">Gallery</a></li>
+              </ul>
+              <div class="stylemod__tab-wrapper">
+                <div id ="p-lgm-1" class="stylemod__tab lgm-1">
+                  <div class="stylemod__heading">
+                    <br>
+                    <span class="stylemod__heading-subtitle">Import or enter your personal schedule here to help you schedule appointments with your favourite stylists!
+                    <button class="scheduleButton">Import</button>
+                    <button class="scheduleButton">Schedule</button>
+                    </span>
+                  </div>
+                  <div class="stylemod__form">
+                  </div>
+                  <div class="stylemod__alter">
+                  </div>
+                </div>
+                <div id ="p-lgm-2" class="stylemod__tab lgm-2 hide">
+                  <div class="stylemod__heading">
+                    <br>
+                    <span class="stylemod__heading-subtitle">No upcoming Appointments.</span>
+                  </div>
+                </div>
+                <div class="stylemod__alter">
+                </div>
+              </div>
+              <div id ="p-lgm-3" class="stylemod__tab lgm-3 hide">
+                <div class="stylemod__heading">
+                  <br>
+                  <span class="stylemod__heading-subtitle">
+                    Upload your favourite styles to help your stylist prepare for your next appointment!
+                    <div class= "addPhoto" id="addPhoto"></div>
+                    <div class="edit__wrapper" id="editGallery"><img class="edit" src="/pages/images/edit.png" alt="Profile Edit"></div>
+                  </span>
+                </div>
+                <div class="main ">
+                  <br>
+                  <ul id="og-grid" class="og-grid scrollable">
+                    <!-- GALLERY PHOTOS -->
+                    <li>
+                      <img src="/pages/images/placeholder1-thumb.jpg" alt="img01"/>
+                      <div class="deletePhoto">
+                        <img class="delete" src="/pages/images/delete.png" alt="Photo Delete">
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br>
+                <br><br><br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- PROFILE PICTURE WINDOW -->
+    <div id="popup" class="popup__wrapper">
+      <div id="popup__content" class="popup__content">
+        <span class="close">&times;</span>
+        <p>Upload New Profile Picture</p>
+      </div>
+    </div>
+    <script src="/pages/js/customer_profile_handler.js"></script>
+    <script src="/pages/js/grid.js"></script>
+    <script>$(function(){ Grid.init(); });</script>
+  </body>
+</html>
